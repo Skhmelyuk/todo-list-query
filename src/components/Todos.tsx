@@ -11,6 +11,8 @@ export const Todos = () => {
   } = useQuery({
     queryKey: ["todos"],
     queryFn: getAllTodos,
+    retry: 1,
+    staleTime: 10_000,
   });
 
   if (isPending)
