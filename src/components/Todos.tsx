@@ -1,31 +1,22 @@
-import { useEffect, useState } from "react";
 import { getAllTodos } from "../api/todosApi";
+import { useQuery } from "@tanstack/react-query";
 
 export const Todos = () => {
-  const [todos, setTodos] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [error, setError] = useState(null);
+  const {
+    data: todos,
+    isPending,
+    isError,
+    error,
+    isFetching,
+  } = useQuery({
+    queryKey: ["todos"],
+    queryFn: getAllTodos,
+  });
 
-  useEffect(() => {
-    setIsLoading(true);
-    getAllTodos()
-      .then((data) => {
-        setTodos(data);
-      })
-      .catch((error) => {
-        setIsError(true);
-        setError(error.message);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, []);
-
-  if (isLoading)
+  if (isPending)
     return <div className="text-green-500 text-6xl">Завантаження.......</div>;
 
-  if (isError) return <div className="text-red-500">{error}</div>;
+  if (isError) return <div className="text-red-500">{error.message}</div>;
 
   return (
     <div className="container mx-auto px-4 pt-10">
